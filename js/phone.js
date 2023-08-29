@@ -1,4 +1,4 @@
-const loadPhone = async (searchText, isShowAll) => {
+const loadPhone = async (searchText = '13', isShowAll) => {
     const res = await fetch(`https://openapi.programming-hero.com/api/phones?search=${searchText}`);
     const data = await res.json();
     const phones = data.data;
@@ -8,26 +8,27 @@ const loadPhone = async (searchText, isShowAll) => {
 }
 
 
+
 const displayPhones = (phones, isShowAll) => {
     const phoneContainer = document.getElementById('phone-container');
-    phoneContainer.textContent = '';  
+    phoneContainer.textContent = '';
 
     const showAllBtn = document.getElementById('btn-container')
-    if(phones.length > 12 && !isShowAll){
+    if (phones.length > 12 && !isShowAll) {
         showAllBtn.classList.remove('hidden')
     }
-    else{
+    else {
         showAllBtn.classList.add('hidden');
     }
     console.log('is show all', isShowAll)
     // diplay onle 12 phone
-    if(!isShowAll){
-        phones = phones.slice(0,12 )
+    if (!isShowAll) {
+        phones = phones.slice(0, 12)
     }
 
     phones.forEach(phone => {
-        console.log(phone);
-        
+        // console.log(phone);
+
         const phoneCrad = document.createElement('div');
         phoneCrad.classList = `card bg-stone-100 p-8 shadow-xl`
         phoneCrad.innerHTML = `
@@ -45,15 +46,39 @@ const displayPhones = (phones, isShowAll) => {
     loadingSpinner(false);
 }
 // show all details btn
-const clickShowAllDetails = async (id)=>{
-    console.log('show all details', id)
+const clickShowAllDetails = async (id) => {
+    // console.log('show all details', id)
     const res = await fetch(`https://openapi.programming-hero.com/api/phone/${id}`);
     const data = await res.json();
-    console.log(data)
+    const phone = data.data;
+
+
+    showAllModal(phone);
+}
+
+// show all model
+const showAllModal = (phone) => {
+    console.log(phone)
+    // const phoneName = document.getElementById('show-details-phone-name');
+    // phoneName.innerText = phone.name;
+    const showDetailsContainer = document.getElementById('show-details-container');
+    showDetailsContainer.innerHTML =`
+    <img class="item-center w-1/2 mt-4" src="${phone.image}" alt="">
+    <h2 class="text-2xl font-semibold my-2">${phone.slug}</h2>
+    <p>${phone.mainFeatures.chipSet}</p>
+    <p>${phone.mainFeatures.displaySize}</p>
+    <p>${phone.releaseDate}</p>
+
+    `
+    
+
+    show_detailes_modeal.showModal()
+
+
 }
 
 // hendel Search Btn
-const hendelSearch =(isShowAll)=>{
+const hendelSearch = (isShowAll) => {
     loadingSpinner(true);
     const InputItemField = document.getElementById('input-field')
     const searchText = InputItemField.value;
@@ -61,18 +86,18 @@ const hendelSearch =(isShowAll)=>{
     loadPhone(searchText, isShowAll);
 }
 
-const loadingSpinner = (isLodding)=>{
+const loadingSpinner = (isLodding) => {
     const loadingSpinnerToggel = document.getElementById('loading-spinner')
-    if(isLodding){
+    if (isLodding) {
         loadingSpinnerToggel.classList.remove('hidden')
     }
-    else{
+    else {
         loadingSpinnerToggel.classList.add('hidden')
     }
 }
 
 // show all btn
-const showAllBtn = () =>{
+const showAllBtn = () => {
     hendelSearch(true);
 }
-
+// loadPhone();
